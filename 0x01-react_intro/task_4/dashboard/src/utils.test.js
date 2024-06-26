@@ -1,29 +1,21 @@
-import { getFullYear, getFooterCopy, getLatestNotification } from "./utils";
+// In strict assertion mode, non - strict methods behave like their corresponding strict methods.For example, assert.deepEqual() will behave like assert.deepStrictEqual().
+import { strict as assert } from 'assert';
+import { getFullYear, getFooterCopy, getLatestNotification } from './utils';
 
-describe("Get full year", function() {
-  it("should return the correct year", function() {
-    const currentYear = new Date().getFullYear();
-    expect(getFullYear()).toBe(currentYear);
-  });
-})
+describe('Test Utils', () => {
 
-describe("Get footer message", function() {
-  const trueMessage = 'Holberton School';
-  const falseMessage = 'Holberton School main dashboard';
+    it('Tests that getFullYear is current', () => {
+        assert.equal(getFullYear(), new Date().getFullYear());
+    });
+    it('Validates the result of getFooterCopy with true', () => {
+        assert.equal(getFooterCopy(true), 'Holberton School.');
+    });
+    it('Validates the result of getFooterCopy with false', () => {
+        assert.equal(getFooterCopy(false), 'Holberton School main dashboard');
+    });
 
-  it("should return the true footer message", function() {
-    const currentMessage = getFooterCopy(true);
-    expect(currentMessage).toBe(trueMessage);
-  });
-  it("should return the false footer message", function() {
-    const currentMessage = getFooterCopy(false);
-    expect(currentMessage).toBe(falseMessage);
-  })
-})
-
-describe("Get latest notification", function() {
-  it("should return the urgent message text", function() {
-    const message = '<strong>Urgent requirement</strong> - complete by EOD';
-    expect(message).toBe(getLatestNotification());
-  });
-})
+    it('checks return of getLatestNotification', () => {
+        // use JSON.stringify because
+        assert.equal(JSON.stringify(getLatestNotification()), JSON.stringify({ __html: '<strong>Urgent requirement</strong> - complete by EOD' }));
+    });
+});
