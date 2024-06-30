@@ -1,4 +1,5 @@
-# 0x01 - Webpack
+# 0x00 - Webpack
+
 Webpack is this amazing library designed to break up and split the files into static 'bundles' that easily serve content to the user. It internally creates a dependency graph, so that your application ships with all your assets properly loaded at the right times. From the website,
 > At its core, webpack is a static module bundler for modern JavaScript applications. When webpack processes your application, it internally builds a dependency graph from one or more entry points and then combines every module your project needs into one or more bundles, which are static assets to serve your content from.
 
