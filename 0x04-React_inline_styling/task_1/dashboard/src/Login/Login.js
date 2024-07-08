@@ -1,88 +1,70 @@
-import React, { useState } from 'react'
-// import './Login.css'
+import './Login.css';
+import React from 'react';
+import { StyleSheet, css } from 'aphrodite';
 
-import { StyleSheet, css } from 'aphrodite'
+const styles = StyleSheet.create({
+   /* App-body */
+    appBody: {
+        minHeight: '60vmin',
+        padding: '32px',
+    },
 
-import WithLogging from '../HOC/WithLogging'
+    appBodyParagraph: {
+        fontWeight: 'bold',
+    },
 
-const Login = ({login}) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [enableSubmit, setEnableSubmit] = useState(false)
+    form: {
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: '8px',
+        alignItems: 'center',
+    },
 
-  const handleLoginSubmit = () => {
-    setIsLoggedIn(true)
-    login()
-  }
+    appBodyLabelSpan: {
+        paddingLeft: '2px',
+        fontWeight: 'bold',
+        marginRight: '16px',
+    },
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value)
-    if (email.length > 0 && password.length > 0)
-      setEnableSubmit(true)
-    else
-      setEnableSubmit(false)
-  }
+    appBodyInput: {
+        /* display: block, */
+        height: '32px',
+        lineHeight: '16px',
+        fontSize: '16px',
+        paddingLeft: '2px',
+        marginTop: '2px',
+    },
 
-  const handleChangePassword = (e) => {
-    setPassword(e.target.value)
-    if (email.length > 0 && password.length > 0)
-      setEnableSubmit(true)
-    else
-      setEnableSubmit(false)
-  }
+    appBodyButton: {
+        borderRadius: '25px',
+        width: '150px',
+        height: '32px',
+        backgroundColor: 'white', /* #ff4242 */
+        fontSize: '24px',
+        border: '.5px solid lightgrey',
+    },
+});
 
-  return (
-    <>
-        <p>Login to access the full dashboard</p>
-        <form onSubmit={(e) => {e.preventDefault(); handleLoginSubmit()}} className={css(styles.form)}>
-          <div className={css(styles.labelInputBlock)}>
-          <label htmlFor="email" className={css(styles.labelS)}>email:</label>
-          <input id="email" type="text" className={css(styles.inputS)}
-            value={email} onChange={handleChangeEmail}
-          />
-          </div>
-          <div className={css(styles.labelInputBlock)}>
-          <label htmlFor="password" className={css(styles.labelS)}>password:</label>
-          <input id="password" type="password" className={css(styles.inputS)}
-            value={password} onChange={handleChangePassword}
-          />
-          </div>
-          <input className={css(styles.buttonS)} type='submit' value="OK"
-            disabled={!enableSubmit}
-          />
-        </form>
-      </>
-  )
+function Login() {
+    return (
+        <div className={css(styles.appBody)} id="Login">
+            <p className={css(styles.appBodyParagraph)}>Login to access the full dashboard</p>
+            <div className={css(styles.form)}>
+                <label htmlFor="email">
+                    <span className={css(styles.appBodyLabelSpan)}>Email:</span>
+                    <input className={css(styles.appBodyInput)} type="email" name="email" id="email" />
+                </label>
+
+                <label htmlFor="password">
+                    <span className={css(styles.appBodyLabelSpan)}>Password:</span>
+                    <input className={css(styles.appBodyInput)} type="password" name="password" id="pwd" />
+                </label>
+
+                <button className={css(styles.appBodyButton)} onClick={ () => { } }>OK</button>
+            </div>
+        </div>
+    );
 }
 
-export default WithLogging(Login)
-
-// define Aphrodite styles
-const styles = StyleSheet.create({
-  form: {
-    '@media (min-width: 600px)': {
-      display: 'flex',
-      flexDirection: 'row'
-    }
-  },
-  labelS: {
-    textTransform: 'capitalize',
-    paddingRight: '1rem'
-  },
-  inputS: {
-    marginRight: '1rem',
-    border: 'none',
-    outline: 'none',
-    background: 'transparent',
-    backgroundColor: 'none'
-  },
-  labelInputBlock: {
-      paddingBlock: '.3rem'
-  },
-  buttonS: {
-    display: 'block',
-    background: 'none',
-    border: '2px solid Yellow'
-  }
-})
+export default Login;
