@@ -1,109 +1,132 @@
-import './App.css';
-import React from 'react';
-import { hot } from 'react-hot-loader';
-import PropTypes from 'prop-types';
+import { Component } from 'react'
+// import './App.css';
+
+import { StyleSheet, css } from 'aphrodite'
 
 import Header from '../Header/Header';
-import Login from '../Login/Login';
 import Footer from '../Footer/Footer';
+import Login from '../Login/Login';
 import Notifications from '../Notifications/Notifications';
+// import { useState } from 'react'
 import CourseList from '../CourseList/CourseList';
+import { getLatestNotification } from '../utils';
+
 import BodySectionWithMarginBottom from '../BodySection/BodySectionWithMarginBottom';
-import BodySection from '../BodySection/BodySection';
-import { getLatestNotification } from '../utils/utils';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    // State:
-    // - displayDrawer is a boolean controlling the view of the notifications
-    this.state = { displayDrawer: false };
-    this.handleDisplayDrawer = this.handleDisplayDrawer.bind(this);
-    this.handleHideDrawer = this.handleHideDrawer.bind(this);
-    this.handleKeydown = this.handleKeydown.bind(this);
+
+class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      isLoggedIn: false,
+      displayDrawer: false,
+    }
+  }
+  
+
+  coursesList = [{id: 1, name: 'ES6', credit: 60},
+    {id: 2, name: 'Webpack', credit: 20},
+    {id: 3, name: 'React', credit: 40}]
+
+  notificationsList = [
+      {id: 1, value: 'New course available', type:'default'},
+      {id: 2, value: 'New resume available', type:'urgent'},
+      {id: 3, html: getLatestNotification, type:'urgent'},
+    ]
+  handleLogin = () => {
+    const { isLoggedIn } = this.state.isLoggedIn
+    this.setState({
+      isLoggedIn: !isLoggedIn
+    })
   }
 
-  // Display the drawer when displayDrawer is true
-  handleDisplayDrawer() {
-    this.setState({ displayDrawer: true });
+  handleDisplayDrawer = () => {
+    // console.log('handleDrawer called')
+    this.setState({
+      displayDrawer: true
+    })
+    console.log(this.state.displayDrawer)
   }
 
-  // Hide the drawer when displayDrawer is false
-  handleHideDrawer() {
-    this.setState({ displayDrawer: false });
+  handleHideDrawer = () => {
+    this.setState({
+      displayDrawer: false
+    })
   }
 
-  // Lifecycle Methods
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeydown);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeydown);
-  }
-
-  // Handle Log out
-  handleKeydown(e) {
-    if (e.ctrlKey && e.key === 'h') {
-      alert('Logging you out');
-      this.props.logOut();
+  // listen for keydown event when the component has mounted (& check for Ctrl + h simultaneous presses)
+  handleKeyDown = (event) => {
+    if (event.ctrlKey && event.key === "h") {
+      // console.log('event: ', event)
+      alert("Logging you out")
+      this.props.logOut()
     }
   }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown)
+  }
+
+  UNSAFE_componentWillMount() {
+    document.removeEventListener("keydown", () => {})
+  }
+
+
   render() {
-    const { displayDrawer } = this.state;
-    const { isLoggedIn, logOut } = this.props;
-
-    const listCourses = [
-      { id: 1, name: 'ES6', credit: 60 },
-      { id: 2, name: 'Webpack', credit: 20 },
-      { id: 3, name: 'React', credit: 40 },
-    ];
-    const htmlObj = getLatestNotification();
-    const listNotifications = [
-      { id: 1, type: 'default', value: 'New course available' },
-      { id: 2, type: 'urgent', value: 'New course available' },
-      { id: 3, type: 'urgent', html: htmlObj },
-    ]
-
+    const { isLoggedIn } = this.state
     return (
       <>
-        <Notifications
-          displayDrawer={ displayDrawer }
-          listNotifications={ listNotifications }
-          // Pass functions by reference
-          handleDisplayDrawer={ this.handleDisplayDrawer }
-          handleHideDrawer={ this.handleHideDrawer }
-          />
-        <div className="App">
-          <Header />
-          { isLoggedIn ?
-          <BodySectionWithMarginBottom title="Course list">
-              <CourseList listCourses={ listCourses } />
-          </BodySectionWithMarginBottom>
-           :
-          <BodySection title="Log in to continue">
-            <Login />
-          </BodySection>
+      <Notifications listNotifications={this.notificationsList}
+        displayDrawer={this.state.displayDrawer}
+        handleDisplayDrawer={this.handleDisplayDrawer}
+        handleHideDrawer={this.handleHideDrawer}
+      />
+      <div className="App">
+        <Header />
+        {/* <div className='App-body'> */}
+        <div className={css(styles.appBody)}>
+          {
+            isLoggedIn ? <BodySectionWithMarginBottom title="Course list">
+                  <CourseList listCourses={this.coursesList}/>
+              </BodySectionWithMarginBottom> : <BodySectionWithMarginBottom title="Log in to continue">
+                  <Login login={this.handleLogin}/>
+              </BodySectionWithMarginBottom>
           }
-          <BodySection title="News from the School">
-            <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-          </BodySection>
-          <Footer />
         </div>
+        {/* Render BodySection with BodySectionWithMarginBottom by passing its props as `this`'s props (html as props too) */}
+        <BodySectionWithMarginBottom title="News from the School"><p>Test adding a new block - news!</p></BodySectionWithMarginBottom>
+        <Footer styles={styles}/>
+      </div>
       </>
-    )
+    );
   }
 }
 
-App.propTypes = {
-  isLoggedIn: PropTypes.bool,
-  logOut: PropTypes.func,
-};
-
+// allows you to set default values for the props argument
 App.defaultProps = {
-  isLoggedIn: false,
   logOut: () => {},
-};
+  // displayDrawer: false,
+}
 
-export default hot(module)(App);
+export default App;
+
+
+/* aphrodite styles definition */
+const styles = StyleSheet.create({
+  app: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    margin: '0 2rem'
+  },
+  appBody: {
+    borderBottom: '3px solid rgb(225, 67, 67)',
+    borderTop: '3px solid rgb(225, 67, 67)',
+    height: '80%',
+    paddingBlock: '2rem',
+    paddingLeft: '3rem',
+  },
+  appFooter: {
+    textAlign: 'center'
+  }
+})
