@@ -1,13 +1,13 @@
-export default function accessImmutableObject (object, array) {
-  let value = object
-  for (const key of array) {
-    if (value instanceof Map) {
-      value = value.get(key)
-    } else if (typeof value === 'object' && value !== null && key in value) {
-      value = value[key]
-    } else {
-      return undefined
-    }
-  }
-  return value
+import { fromJS, getIn } from 'immutable';
+
+export default function accessImmutableObject(object, array) {
+    return getIn(fromJS(object), array);
 }
+// console.log(
+// accessImmutableObject({
+//     name: {
+//          first: "Guillaume",
+//          last: "Salva"
+//     }
+// }, ['name', 'first'])
+// )
